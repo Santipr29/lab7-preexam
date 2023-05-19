@@ -10,14 +10,13 @@ const firebaseConfig = {
 
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, addDoc, getDocs,onSnapshot, doc, serverTimestamp,query,orderBy} from "firebase/firestore";
-import { Publication } from "../types/publication";
+import { Product } from "../types/product";
 import {
     createUserWithEmailAndPassword,
     getAuth,
     signInWithEmailAndPassword,
     setPersistence,
-    browserSessionPersistence,
-  
+    browserSessionPersistence,  
 } from "firebase/auth";
 
 const app = initializeApp(firebaseConfig);
@@ -72,45 +71,46 @@ const login = async ({
 
 const db = getFirestore(app);
 
-const addPublication = async (publication: Omit<Publication, "id">) => {
+const addProduct = async (product: Omit<Product, "id">) => {
   try {
-    const where = collection(db, "publications");
-    await addDoc(where, publication);
+    const where = collection(db, "products");
+    await addDoc(where, {...product, createdAt: new Date()});
     console.log("se añadió con éxito");
   } catch (error) {
     console.error(error);
   }
 };
 
-const getPublication = async () => {
-  const querySnapshot = await getDocs(collection(db, "publications"));
-  const transformed: Array<Publication> = [];
+const getProduct = async () => {
+  const order = query(collection(db, "products"), orderBy("createdAt"))
+  const querySnapshot = await getDocs(order);
+  const transformed: Array<Product> = [];
 
   querySnapshot.forEach((doc) => {
-    const data: Omit<Publication, "id"> = doc.data() as any;
+    const data: Omit<Product, "id"> = doc.data() as any;
     transformed.push({ id: doc.id, ...data });
   });
 
   return transformed;
 };
 
-const getPublicationsListener = (cb: (docs: Publication[]) => void) => {
-  const ref = collection(db, "publications");
-  onSnapshot(ref, (collection) => {
-    const docs: Publication[] = collection.docs.map((doc) => ({
+const getProductsListener = (cb: (docs: Product[]) => void) => {
+  const order = query(collection(db,"products"), orderBy("createdAt"));
+  onSnapshot(order, (collection) => {
+    const docs: Product[] = collection.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
-    })) as Publication[];
+    })) as Product[];
     cb(docs);
   });
 };
 
 
 export default {
-  addPublication,
-  getPublication,
+  addProduct,
+  getProduct,
   register,
-  getPublicationsListener,
+  getProductsListener,
   login,
   serverTimestamp,
 };
