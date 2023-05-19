@@ -8,9 +8,6 @@ import { navigate, setUserCredentials } from "./actions";
 onAuthStateChanged(auth, (user) => {
   if (user) {
     user.email !== null ? dispatch(setUserCredentials(user.email)) : '';
-    dispatch(navigate(Screens.DASHBOARD));
-  } else {
-    dispatch(navigate(Screens.LOGIN));
   }
 });
 
