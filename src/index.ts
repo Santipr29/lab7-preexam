@@ -22,7 +22,7 @@ class AppContainer extends HTMLElement {
         break;
 
       case Screens.DASHBOARD:
-        const dashboard = this.ownerDocument.createElement("");
+        const dashboard = this.ownerDocument.createElement("app-dashboard");
         this.shadowRoot?.appendChild(dashboard);
         break;
 
