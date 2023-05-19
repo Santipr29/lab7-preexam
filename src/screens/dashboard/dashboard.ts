@@ -52,6 +52,9 @@ export default class Dashboard extends HTMLElement {
     const logOut = this.ownerDocument.createElement("button");
     logOut.innerText = "Log Out";
     logOut.addEventListener("click", this.logOut)
+    logOut.addEventListener("click", ()=>{
+        dispatch(navigate(Screens.REGISTER))
+    })
     this.shadowRoot?.appendChild(logOut);
 
     const title = this.ownerDocument.createElement("h1");
@@ -82,7 +85,6 @@ export default class Dashboard extends HTMLElement {
         if (i instanceof HTMLElement) oldOnesIds.push(i.dataset.pid || "");
       });
       const newOnes = products.filter((prod) => !oldOnesIds.includes(prod.id));
-      console.log(newOnes);
 
       newOnes.forEach((p: Product) => {
         const container = this.ownerDocument.createElement("section");
